@@ -6,7 +6,7 @@ const Todo = require("../models/todoModels");
 router.get("/todo", async (req, res) => {
   try {
     const allTodos = await Todo.findAll();
-    return res.status(200).json({ result: allTodos });
+    return res.status(200).send(allTodos);
   } catch (error) {
     return res.status(500).json({ err: error });
   }
@@ -19,7 +19,7 @@ router.get("/todo/:id", async (req, res) => {
     });
 
     if (exitingTodo) {
-      return res.status(200).json({ result: exitingTodo });
+      return res.status(200).json(exitingTodo);
     }
 
     if (!exitingTodo) {
@@ -43,14 +43,14 @@ router.post("/todo", async (req, res) => {
     const todo = {
       title,
       description,
-      dueDate,
       completed,
       priority,
+      dueDate,
     };
     const createdTodo = await Todo.create(todo);
 
     if (createdTodo) {
-      return res.status(201).json({ result: createdTodo });
+      return res.status(201).send(createdTodo);
     }
   } catch (error) {
     return res.status(500).json({ err: error });
@@ -66,7 +66,7 @@ router.put("/todo/:id", async (req, res) => {
     });
 
     if (!exitingTodo) {
-      return res.status(404).json({ err: "Todo doesn't exits in database" });
+      return res.status(404).send("Todo doesn't exits in database");
     }
 
     if (exitingTodo) {
@@ -78,7 +78,7 @@ router.put("/todo/:id", async (req, res) => {
         priority,
       });
       await updatedTodo.save();
-      return res.status(200).json({ "Todo updated": updatedTodo });
+      return res.status(200).send(updatedTodo);
     }
   } catch (error) {
     return res.status(500).json({ err: error });
@@ -102,7 +102,7 @@ router.delete("/todo/:id", async (req, res) => {
 
       await deletedTodo.save();
 
-      return res.status(200).send({ deleted: deletedTodo });
+      return res.status(200).send({ deletedTodo });
     }
   } catch (error) {
     return res.status(500).json({ err: error });
